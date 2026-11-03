@@ -1,4 +1,4 @@
-# TecnoShop — Backend (etapa 1)
+# TecnoShop — Backend 
 
 Base de datos y capa de persistencia para la evaluación parcial 3 de DSY1104.
 
