@@ -1,13 +1,14 @@
 package cl.duoc.tecnoshop.model;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity @Table(name="usuarios")
 public class Usuario {
  @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id;
  @Column(nullable=false) private String nombre;
  @Column(nullable=false,unique=true) private String email;
- @Column(nullable=false) private String passwordHash;
+ @Column(nullable=false) @JsonIgnore private String passwordHash;
  @Enumerated(EnumType.STRING) @Column(nullable=false) private Rol rol = Rol.CLIENTE;
  public Usuario() {}
  public Long getId(){return id;}
