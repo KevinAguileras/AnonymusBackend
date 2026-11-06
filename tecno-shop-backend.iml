@@ -2,10 +2,5 @@
 <module version="4">
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$/src/main/java/cl/duoc/tecnoshop/config" />
-    <content url="file://$MODULE_DIR$" dumb="true">
-      <excludeFolder url="file://$MODULE_DIR$/src/main/java/cl/duoc" />
-      <excludeFolder url="file://$MODULE_DIR$/src/main/java/cl/duoc/tecnoshop" />
-      <excludeFolder url="file://$MODULE_DIR$/src/main/java/cl/duoc/tecnoshop/config" />
-    </content>
   </component>
 </module>
