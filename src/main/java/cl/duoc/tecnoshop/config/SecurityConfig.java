@@ -25,7 +25,7 @@ public class SecurityConfig {
                   .requestMatchers(HttpMethod.GET,"/api/v1/boletas/**").hasAnyRole("ADMINISTRADOR","VENDEDOR","CLIENTE")
                   .requestMatchers(HttpMethod.POST,"/api/v1/boletas/**").hasAnyRole("ADMINISTRADOR","CLIENTE")
                   .requestMatchers("/api/v1/productos/**","/api/v1/categorias/**").hasRole("ADMINISTRADOR")
-                  .anyRequest().authenticated())
+                  .anyRequest().denyAll())
           .addFilterBefore(jwt,UsernamePasswordAuthenticationFilter.class).build();
  }
  @Bean CorsConfigurationSource corsConfigurationSource(){
