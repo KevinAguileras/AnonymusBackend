@@ -21,11 +21,14 @@ public class SecurityConfig {
           .authorizeHttpRequests(a->a
                   .requestMatchers("/api/v1/auth/**","/swagger-ui/**","/swagger-ui.html","/v3/api-docs/**","/error").permitAll()
                   .requestMatchers(HttpMethod.GET,"/api/v1/productos/**","/api/v1/categorias/**").permitAll()
+                  .requestMatchers("/api/v1/cuenta").authenticated()
                   .requestMatchers("/api/v1/admin/**").hasRole("ADMINISTRADOR")
                   .requestMatchers(HttpMethod.GET,"/api/v1/boletas/**").hasAnyRole("ADMINISTRADOR","VENDEDOR","CLIENTE")
                   .requestMatchers(HttpMethod.POST,"/api/v1/boletas/**").hasAnyRole("ADMINISTRADOR","CLIENTE")
                   .requestMatchers("/api/v1/productos/**","/api/v1/categorias/**").hasRole("ADMINISTRADOR")
                   .anyRequest().denyAll())
+          .exceptionHandling(e -> e.authenticationEntryPoint((request, response, error) -> response.sendError(401))
+                  .accessDeniedHandler((request, response, error) -> response.sendError(403)))
           .addFilterBefore(jwt,UsernamePasswordAuthenticationFilter.class).build();
  }
  @Bean CorsConfigurationSource corsConfigurationSource(){

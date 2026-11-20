@@ -1,33 +1,55 @@
-# TecnoShop — Backend 
+# Anonymus Backend
 
-Base de datos y capa de persistencia para la evaluación parcial 3 de DSY1104.
-
-## Requisitos
-- Java 21
-- Maven 3.9+
-- MySQL local iniciado
-
-## Configuración
-Crear una base de datos MySQL llamada `tecnoshop` o permitir que la URL JDBC la cree con un usuario autorizado.
-Definir `DB_URL`, `DB_USER`, `DB_PASSWORD` mediante variables de entorno (sin subir contraseñas a GitHub).
+Spring Boot con Java 21, MySQL, API REST `/api/v1`, Swagger, JWT y roles
+ADMINISTRADOR, VENDEDOR y CLIENTE. El frontend consulta la API; la base no se expone
+al navegador.
 
 ## Ejecutar
+
+Para MySQL local configurar `DB_URL`, `DB_USER`, `DB_PASSWORD` y `JWT_SECRET`.
+El puerto predeterminado es 8080.
+
 ```bash
 mvn spring-boot:run
 ```
 
-## Componentes incluidos
-- 5 modelos JPA: Usuario, Categoria, Producto, Boleta y DetalleBoleta.
-- 5 interfaces `JpaRepository`.
-- Configuración inicial Spring Boot y MySQL.
-- Enum `Rol` para ADMINISTRADOR, VENDEDOR y CLIENTE.
+Para AWS usar [la guía de infraestructura](infra/README.md). Con IntelliJ se utiliza
+el perfil `aws`, puerto 8081 y el túnel RDS por 13306. No subir secretos ni archivos PEM.
 
-## Importante
-Esta es SOLO la etapa inicial de persistencia. Todavía no incluye JWT, endpoints CRUD, Swagger, controladores ni integración React.
-Spring Security está declarado como dependencia, pero aún no está configurado para autenticación por JWT. No considerar el proyecto terminado ni apto para producción.
+Swagger: `http://localhost:8081/swagger-ui/index.html` en esa configuración.
 
-### Próximos pasos
-1. Conexión a MySQL y prueba de persistencia.
-2. Servicios, DTO, controladores REST, manejo de errores y Swagger.
-3. Spring Security, autenticación por JWT y roles.
-4. Integración frontend y documentos de entrega.
+## API
+
+- `/auth/registro`, `/auth/login`: registro y emisión de JWT.
+- `/cuenta`: GET de identidad/rol actual y PUT del nombre del usuario autenticado.
+- `/productos`, `/categorias`: consulta pública y escritura solo de administrador.
+- `/boletas`: compra de cliente/administrador, consulta propia del cliente o general
+  para administrador/vendedor.
+- `/admin/usuarios`: consulta y modificación de rol solo de administrador.
+
+La primera cuenta administrativa debe promoverla el responsable de la base; el
+registro público siempre crea clientes. El frontend documenta los pasos de prueba.
+La compra es una simulación académica, sin integración de pagos.
+
+## Pruebas y cobertura
+
+```bash
+mvn test
+mvn package
+```
+
+También se ejecutan desde IntelliJ: recargar Maven y usar Run sobre `src/test/java`
+o sobre una clase de pruebas. Maven `test` genera `target/site/jacoco/index.html`.
+
+JUnit y Mockito prueban registro, hash de contraseña, duplicados, login, JWT y compra
+(total calculado con precio del servidor, descuento de stock, productos inexistentes,
+stock insuficiente y usuario no autorizado). Las pruebas MockMvc cargan la seguridad
+real con repositorios simulados para verificar 401, 403, escritura de administrador,
+identidad de cuenta y validación del registro. No requieren AWS ni MySQL activo.
+
+Estas pruebas no demuestran por sí solas persistencia, rollback real de la transacción
+ni seguridad ante compras concurrentes: son comprobaciones adicionales de integración.
+La prueba manual con AWS consiste en crear, consultar, reiniciar y volver a consultar.
+No hay renovación automática ni revocación de JWT implementada.
+
+[Pruebas Spring Boot](https://docs.spring.io/spring-boot/3.5/reference/testing/spring-boot-applications.html).
